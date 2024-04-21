@@ -1,3 +1,3 @@
 export { default as MainContent } from './MainContent';
 export { default as NavBar } from './NavBar';
-import { default as SiderBar } from './SiderBar';
+export { default as SiderBar } from './SiderBar';
