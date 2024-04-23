@@ -5,9 +5,17 @@ module.exports = {
   assetsDir: 'assets',
   devServer: {
     host: '127.0.0.1',
-    port: 3000,
+    port: 3011,
     open: true,
-    openPage: 'cms-manage/'
+    openPage: 'cms-manage/',
+    proxy: {
+      '/api/atlas-cms': {
+        target: 'http://127.0.0.1:3300',
+        pathRewrite: {
+          '^/api/atlas-cms': '/atlas-cms'
+        }
+      }
+    }
   },
   chainWebpack: config => {
     const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];

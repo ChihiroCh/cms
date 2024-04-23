@@ -9,13 +9,24 @@
         class="component-item"
       >
         <ul class="component-list">
-          <li v-for="(card, idx) in list.components" :key="idx">
+          <li
+            :draggable="draggableEnbaled(card)"
+            v-for="(card, idx) in list.components"
+            :key="idx"
+            :class="draggableEnbaled(card) ? 'drag-enabled' : 'drag-disabled'"
+            @dragstart="handleDragStart(card)"
+            @dragend="handleDragEnd"
+          >
             <i :class="card.iconClass" style="font-size: 28px" />
             <p class="name">
               {{ card.name }}
             </p>
             <p class="num">
-              <!-- {{ `${componentMap[component.data.component] || 0}/${component.maxNumForAdd}` }} -->
+              {{
+                `${PageComponentTotal[card.data.component] || 0}/${
+                  card.maxNumForAdd
+                }`
+              }}
             </p>
           </li>
         </ul>
@@ -26,13 +37,34 @@
 
 <script>
 import ComponentList from "@/config/component-list";
+import { mapState, mapMutations, mapGetters } from "vuex";
 export default {
   name: "PageLeft",
   data() {
     return {
       ComponentList,
-      activeNames: ["1"],
+      activeNames: [1, 2],
     };
+  },
+  computed: {
+    ...mapState(["dragActive"]),
+    ...mapGetters(["PageComponentTotal"]),
+  },
+  methods: {
+    ...mapMutations(["setDragActive", "setCurDragComponent"]),
+    draggableEnbaled(card) {
+      // console.log("object card", card);
+      let curnum = this.PageComponentTotal[card.data.component] || 0;
+      return curnum < card.maxNumForAdd;
+    },
+    handleDragEnd(e) {
+      console.log("object grag", e);
+    },
+    handleDragStart(component) {
+      this.setDragActive(true);
+      this.setCurDragComponent(JSON.parse(JSON.stringify(component)));
+      // console.log("object", component);
+    },
   },
 };
 </script>
