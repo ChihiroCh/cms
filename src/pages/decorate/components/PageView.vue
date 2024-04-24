@@ -14,34 +14,78 @@
           width="100%"
           :src="targetSrc"
           title="频道名称"
+          :height="h5Height"
           @load="handleLoad"
         />
       </div>
-      <div @dragover="handleOver"></div>
-      <div @dragover="handleOut"></div>
+      <div
+        v-if="dragActive"
+        @dragover="handleOver($event)"
+        class="preview-drag-mask"
+      ></div>
+      <div
+        v-if="dragActive"
+        @dragover="handleOut($event)"
+        class="preview-drag-out"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import { decorateOrigin } from "@/config";
 export default {
   name: "PageView",
   computed: {
-    ...mapState(["pageData"]),
+    ...mapState([
+      "pageData",
+      "h5Height",
+      "dragActive",
+      "componentsTopList",
+      "addComponentIndex",
+    ]),
     targetSrc() {
       return decorateOrigin + "?pageId=237&noLogin=true";
     },
   },
+  mounted() {
+    this.getH5Height();
+    console.log("loadddddd", this.componentsTopList);
+  },
   methods: {
-    handleOver() {
+    ...mapActions(["getH5Height"]),
+    ...mapMutations(["setAddComponentIndex", "sendViewIndex"]),
+    handleOver(event) {
+      event.preventDefault();
+      const viewWrapTop = 191; // 页面预览区域距离顶部top
+      // 拖动距离预览区top距离
+      let dropTop = this.$refs.pageView.scrollTop + event.pageY - viewWrapTop;
+      let addIndex = 0;
+      if (this.componentsTopList) {
+        for (let i = this.componentsTopList.length - 1; i >= 0; i--) {
+          const value = this.componentsTopList[i];
+          const prev = this.componentsTopList[i - 1] || 0;
+          const _half = (value - prev) / 2; // 当前组件高度的一半
+          if (i === 0 && dropTop <= _half) break;
+          if (dropTop > value - _half) {
+            addIndex = i + 1;
+            break;
+          }
+        }
+      }
+      // 预览区域生成预添加组件
+      if (this.addComponentIndex === addIndex) return;
+      this.setAddComponentIndex(addIndex);
+      this.sendViewIndex(addIndex);
       console.log("object over");
     },
-    handleOut() {
+    handleOut(event) {
+      event.preventDefault();
       console.log("object end");
     },
     handleLoad() {
+      // console.log("iframe load");
       this.$store.commit("sendH5Data");
     },
   },

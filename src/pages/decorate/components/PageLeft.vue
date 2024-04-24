@@ -59,11 +59,12 @@ export default {
     },
     handleDragEnd(e) {
       console.log("object grag", e);
+      this.setDragActive(false);
     },
     handleDragStart(component) {
       this.setDragActive(true);
       this.setCurDragComponent(JSON.parse(JSON.stringify(component)));
-      // console.log("object", component);
+      console.log("object", component);
     },
   },
 };
