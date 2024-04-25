@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <!-- header -->
+    <page-header />
     <!-- 左侧siderbar -->
     <page-left />
     <!-- 中间内容区 -->
@@ -12,11 +13,13 @@
 import { mapMutations } from "vuex";
 import PageLeft from "./components/PageLeft.vue";
 import PageView from "./components/PageView.vue";
+import PageHeader from "./components/PageHeader.vue";
 import { getCmsPageById } from "@/api/activity";
 import { createRandomId } from "@/utils";
 export default {
   name: "decorate",
   components: {
+    PageHeader,
     PageLeft,
     PageView,
   },
@@ -27,12 +30,12 @@ export default {
     ...mapMutations(["setPageData"]),
     async getCmsPage() {
       // id目前先写死，从当前路由中获取
-      // const { id } = this.$route.query;
-      // if (id) {
-      let { data } = await getCmsPageById(237);
-      this.getCmsPageData(data);
-      console.log("data", data);
-      // }
+      const { id } = this.$route.query;
+      if (id) {
+        let { data } = await getCmsPageById(id);
+        this.getCmsPageData(data);
+        console.log("data", data);
+      }
     },
     getCmsPageData(data) {
       if (data && data.componentList) {

@@ -37,7 +37,7 @@
 
 <script>
 import ComponentList from "@/config/component-list";
-import { mapState, mapMutations, mapGetters } from "vuex";
+import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 export default {
   name: "PageLeft",
   data() {
@@ -47,24 +47,42 @@ export default {
     };
   },
   computed: {
-    ...mapState(["dragActive"]),
+    ...mapState(["dragActive", "addComponentIndex", "curDragComponent"]),
     ...mapGetters(["PageComponentTotal"]),
   },
   methods: {
-    ...mapMutations(["setDragActive", "setCurDragComponent"]),
+    ...mapMutations([
+      "setDragActive",
+      "setCurDragComponent",
+      "setAddComponentIndex",
+      "setViewActiveId",
+    ]),
+    ...mapActions(["sendPageComponent"]),
     draggableEnbaled(card) {
       // console.log("object card", card);
       let curnum = this.PageComponentTotal[card.data.component] || 0;
       return curnum < card.maxNumForAdd;
     },
-    handleDragEnd(e) {
-      console.log("object grag", e);
-      this.setDragActive(false);
-    },
     handleDragStart(component) {
       this.setDragActive(true);
       this.setCurDragComponent(JSON.parse(JSON.stringify(component)));
       console.log("object", component);
+    },
+    handleDragEnd() {
+      this.setDragActive(false);
+      let addIndex = this.addComponentIndex;
+      if (addIndex !== null) {
+        console.log("send", this.curDragComponent);
+        this.sendPageComponent({
+          type: "add",
+          index: addIndex,
+          data: this.curDragComponent,
+        });
+        // this.addComponent({ index: addIndex, data: this.curDragComponent });
+        this.setAddComponentIndex(null);
+        // console.log(addIndex, "addIndex");
+        this.setViewActiveId(addIndex);
+      }
     },
   },
 };
