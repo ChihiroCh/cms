@@ -6,6 +6,8 @@
     <page-left />
     <!-- 中间内容区 -->
     <PageView />
+    <!-- 右侧修改区 -->
+    <page-right />
   </div>
 </template>
 
@@ -13,6 +15,7 @@
 import { mapMutations } from "vuex";
 import PageLeft from "./components/PageLeft.vue";
 import PageView from "./components/PageView.vue";
+import PageRight from "./components/PageRight.vue";
 import PageHeader from "./components/PageHeader.vue";
 import { getCmsPageById } from "@/api/activity";
 import { createRandomId } from "@/utils";
@@ -22,6 +25,7 @@ export default {
     PageHeader,
     PageLeft,
     PageView,
+    PageRight,
   },
   created() {
     this.getCmsPage();

@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { saveCmsPage } from "@/api/activity";
 export default {
   name: "PageHeader",
   data() {
@@ -29,10 +30,60 @@ export default {
       previewLoading: false,
     };
   },
+  computed: {
+    pageData() {
+      return this.$store.state.pageData;
+    },
+  },
   methods: {
-    backToList() {},
-    handleSave() {},
-    handleView() {},
+    backToList() {
+      try {
+        if (window.opener && window.opener.location.hash === "#/activity") {
+          window.opener.close();
+        }
+        this.$router.push("/activity");
+      } catch (error) {
+        this.$router.push("/activity");
+      }
+    },
+    handleSave() {
+      this.saveLoading = true;
+      this.savePage()
+        .then(() => {
+          this.$message.success("保存成功");
+        })
+        .catch((err) => {
+          this.$message.warning("保存失败" + err.$message);
+        })
+        .finally(() => {
+          this.saveLoading = false;
+        });
+    },
+    handleView() {
+      this.previewLoading = true;
+      this.savePage({ online: 1 }).then((res) => {
+        this.$message.success("保存成功");
+        let id = res && res.data ? res.data.id : "";
+        this.toPrew(id ? id : this.$route.query.id);
+      });
+    },
+    savePage(params) {
+      return saveCmsPage({ ...this.pageData, params }).then((res) => {
+        if (res && res.data && res.data.id) {
+          const cloneData = JSON.parse(JSON.stringify(this.pageData));
+          cloneData.id = res.data.id;
+          this.$store.commit("setPageData", { data: cloneData });
+          this.$router.push(`/decorate?id=${res.data.id}`);
+        }
+      });
+    },
+    toPrew(id) {
+      const url = this.$router.resolve({
+        path: "preview",
+        query: { id },
+      });
+      window.open(url.href, "_blank");
+    },
   },
 };
 </script>

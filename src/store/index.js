@@ -99,7 +99,14 @@ const store = new Vuex.Store({
       this.commit('setAddComponentIndex', null); // 重置拖动组件要添加的位置
       this.commit('sendViewDeleted');
     },
-    editComponent() {}
+    editComponent() {},
+    // 修改页面数据
+    changePageData(state, val) {
+      Object.keys(val).forEach(item => {
+        state.pageData[item] = val[item];
+      });
+      this.commit('sendH5Data');
+    }
   },
   actions: {
     getH5Height({ commit }) {
@@ -107,6 +114,10 @@ const store = new Vuex.Store({
         let height = data.height ? data.height + 72 : 768;
         let list = data.componentsTopList || [];
         commit('setH5Height', { height, list });
+      });
+      message.on('setActive', data => {
+        commit('setActiveComponentId', data);
+        commit('updateType', 2);
       });
     },
     sendPageComponent({ commit }, val) {
