@@ -8,6 +8,10 @@
     <PageView />
     <!-- 右侧修改区 -->
     <page-right />
+    <UpLoadImg
+      :dialog-image-visible.sync="dialogImageVisible"
+      @upLoadImgSuccess="upLoadImgSuccess"
+    />
   </div>
 </template>
 
@@ -19,6 +23,8 @@ import PageRight from "./components/PageRight.vue";
 import PageHeader from "./components/PageHeader.vue";
 import { getCmsPageById } from "@/api/activity";
 import { createRandomId } from "@/utils";
+// 公共配置组件
+import UpLoadImg from "@/components/BasicConfig/UpLoadImg";
 export default {
   name: "decorate",
   components: {
@@ -26,6 +32,7 @@ export default {
     PageLeft,
     PageView,
     PageRight,
+    UpLoadImg,
   },
   created() {
     this.getCmsPage();
@@ -53,6 +60,20 @@ export default {
         });
         this.setPageData({ data });
       }
+    },
+    upLoadImgSuccess(imgUrl) {
+      this.$store.state.upLoadImgSuccess &&
+        this.$store.state.upLoadImgSuccess(imgUrl);
+    },
+  },
+  computed: {
+    dialogImageVisible: {
+      get() {
+        return this.$store.state.dialogImageVisible;
+      },
+      set(val) {
+        this.$store.commit("setDialogImageVisible", val);
+      },
     },
   },
 };

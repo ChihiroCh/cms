@@ -2,14 +2,23 @@
   <div class="page-right">
     <change-settype v-model="setType" />
     <!-- 页面设置 -->
-    <div v-show="this.setType === 1">
+    <div v-show="setType === 1">
       <set-page-info />
     </div>
     <!-- 组件设置 -->
-    <div v-show="this.setType === 2">
+    <div v-show="setType === 2">
+      <com-title
+        :title="(currentComponent && currentComponent.name) || '组件管理'"
+      />
+      <!-- 生效时间 -->
+      <com-valid-time
+        v-if="currentComponent"
+        v-model="currentComponent.data.validTime"
+      />
       <component
         :is="currentComponent.data.component"
         v-if="currentComponent"
+        @edmitComponent="edmitComponent"
       />
     </div>
   </div>
@@ -17,8 +26,10 @@
 
 <script>
 import ChangeSettype from "./components/ChangeSettype.vue";
+import ComTitle from "@/components/BasicUi/ComTitle";
 import SetPageInfo from "./components/SetPageInfo.vue";
 import { dynamicComponents } from "../../../utils";
+import ComValidTime from "@/components/BasicUi/ComValidTime";
 import { mapState } from "vuex";
 export default {
   name: "PageRight",
@@ -28,6 +39,8 @@ export default {
   components: {
     ChangeSettype,
     SetPageInfo,
+    ComValidTime,
+    ComTitle,
     ...dynamicComponents,
   },
   computed: {
@@ -46,6 +59,9 @@ export default {
         ? pageList.find((it) => it.id === this.activeComponentId)
         : null;
     },
+  },
+  methods: {
+    edmitComponent() {},
   },
 };
 </script>

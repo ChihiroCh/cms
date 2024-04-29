@@ -15,6 +15,7 @@
     "element-ui": "2.15.6",
     "style-resources-loader": "1.2.1",
     "vue": "^2.6.11",
+    "vue-quill-editor": "3.0.6",
     "vue-router": "3.0.1",
     "vuedraggable": "2.23.2",
     "vuex": "3.1.1"

@@ -37,7 +37,9 @@ const store = new Vuex.Store({
     h5Height: '', //获取crs高度
     componentsTopList: '', //获取各组件距离顶部的距离
     addComponentIndex: null, // 插入组件的索引值
-    setType: 1 //1为页面设置，2为组件设置
+    setType: 1, //1为页面设置，2为组件设置
+    dialogImageVisible: false, //上传弹框显示
+    upLoadImgSuccess: null //上传成功回调
   },
   getters,
   mutations: {
@@ -106,6 +108,12 @@ const store = new Vuex.Store({
         state.pageData[item] = val[item];
       });
       this.commit('sendH5Data');
+    },
+    setDialogImageVisible(state, val) {
+      state.dialogImageVisible = val;
+    },
+    setUpLoadImgSucess(state, val) {
+      state.upLoadImgSuccess = val;
     }
   },
   actions: {

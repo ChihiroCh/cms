@@ -167,8 +167,8 @@ export default {
     },
     // 图片上传
     showDialogImage() {
-      this.$store.commit("SET_UPIMAGE_VISIBLE", true);
-      this.$store.commit("SET_UPIMAGE_FUC", this.upLoadImgSuccess);
+      this.$store.commit("setDialogImageVisible", true);
+      this.$store.commit("setUpLoadImgSucess", this.upLoadImgSuccess);
     },
     // 图片上传成功
     upLoadImgSuccess(imgUrl) {
